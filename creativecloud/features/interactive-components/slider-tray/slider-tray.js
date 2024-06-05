@@ -439,6 +439,14 @@ function uploadButton(data) {
     return uploadCTA;
   }
 
+ function createUploadPSButton(data) {
+    const btnText = data.stepConfigs[data.stepIndex].querySelectorAll('ul li')[4]?.innerText;
+    const removeBgCTA = createTag('div', { class: 'gray-button start-over-button continue body-m hide', href: '#' });
+    const svg = `<div class='svg-icon-container'><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.88 121.93" style="enable-background:new 0 0 122.88 121.93" xml:space="preserve"><g><path d="M8.33,0.02h29.41v20.6H20.36v80.7h82.1V84.79h20.36v37.14H0V0.02H8.33L8.33,0.02z M122.88,0H53.3l23.74,23.18l-33.51,33.5 l21.22,21.22L98.26,44.4l24.62,24.11V0L122.88,0z"/></g></svg></div>`;
+    removeBgCTA.innerHTML = `${svg} ${btnText}`;
+  return removeBgCTA;
+}
+
 function selectorTrayWithImgs(layer, data) {
   const selectorTray = createTag('div', { class: 'body-s selector-tray' });
   const trayItems = createTag('div', { class: 'tray-items' });
@@ -451,7 +459,8 @@ function selectorTrayWithImgs(layer, data) {
   productIcon.innerHTML = `${productSvg}`;
   const hueSat = hueSatBtn(data);
   const uploadCTA = uploadButton(data);
-  trayItems.append(productIcon, hueSat, uploadCTA);
+  const continueCTA = createUploadPSButton(data);
+  trayItems.append(productIcon, hueSat, uploadCTA, continueCTA);
   selectorTray.append(trayItems);
   return selectorTray;
 }
