@@ -60,10 +60,10 @@ function handleInput(option, sliderTray, menu, layer) {
   try {
     text = sibling.nodeValue.trim();
   } catch (e) {
-    text = 'Hue';
+    text = 'Label';
   }
   let picture = '';
-  if (sibling.nextSibling && sibling.nextSibling.tagName === 'PICTURE') {
+  if (sibling?.nextSibling && sibling.nextSibling.tagName === 'PICTURE') {
     picture = sibling.nextSibling;
   }
   switch (inputType) {
@@ -98,7 +98,7 @@ function observeSliderTray(sliderTray, targets) {
 }
 
 function createSlider(sliderType, details, menu, sliderTray) {
-  const sliderLabel = createTag('label', { for: `${sliderType}` }, details.trim());
+  const sliderLabel = createTag('label', { for: `${sliderType}` }, details ? details.trim() : 'Label');
   const sliderContainer = createTag('div', { class: `sliderContainer ${sliderType.toLowerCase()}` });
   const outerCircle = createTag('a', { class: 'outerCircle', href: '#', tabindex: '-1' });
   const analyticsHolder = createTag('div', { class: 'interactive-link-analytics-text' }, `Adjust ${sliderType} slider`);
