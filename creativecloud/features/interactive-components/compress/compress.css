@@ -142,7 +142,7 @@
     animation: spinner .6s linear infinite;
   }
 
-  .interactive-enabled .uploadButton .svg-icon-container svg * {
+  .interactive-enabled .uploadButton .svg-icon-container svg *,
   .interactive-enabled .dark .uploadButton .svg-icon-container svg * {
     fill: white;
     stroke: white;
