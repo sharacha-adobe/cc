@@ -48,6 +48,10 @@ async function createSelectorTray(data, layer) {
     menu.prepend(d);
   }
   layer.prepend(sliderTray);
+  if (sliderTray.classList.contains('slidershow')) {
+    sliderTray.classList.remove('slidershow');
+    sliderTray.style.display = 'none';
+  }
   observeSliderTray(sliderTray, data.target, menu);
 }
 
