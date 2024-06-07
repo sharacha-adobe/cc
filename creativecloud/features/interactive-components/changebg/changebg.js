@@ -255,6 +255,8 @@ function uploadButton(data) {
     };
     reader.readAsDataURL(file);
     data.target.querySelector('.continue').style.display = 'flex';
+    data.target.querySelector('.changebg-button').style.display = 'none';
+    data.target.querySelector('.removebg-button').style.display = 'flex';
   });
   return uploadCTA;
 }
