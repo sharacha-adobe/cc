@@ -3,17 +3,52 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  padding: 0 16px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: var(--prompt-input-fill);
-  border-radius: 0 0 8px 8px;
   font-weight: bold;
   box-sizing: border-box;
-  width: 100%;
+  /* width: 100%; */
   color: var(--color-white);
   z-index: 4;
+}
+
+.interactive-enabled .step-selector-tray-edits .selector-tray .bg-imgs {
+  /* position: relative; */
+  width: fit-content;
+  /* padding: 10px; */
+  display: none;
+}
+
+.interactive-enabled .step-selector-tray-edits .selector-tray .bg-imgs .bg-icons {
+  position: relative;
+  background: var(--prompt-input-fill);
+  padding: 10px;
+  height: fit-content;
+  /* height: 55px; */
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  border-radius: 8px;
+}
+
+.interactive-enabled .step-selector-tray-edits.light .selector-tray .bg-imgs .bg-icons {
+  background-color: white;
+}
+
+.interactive-enabled .step-selector-tray-edits .selector-tray .bg-imgs img {
+  position: relative;
+  min-height: 50px;
+  max-height: 50px;
+  height: 50px;
+  width: auto;
+  display: flex;
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+
+.interactive-enabled .step-selector-tray-edits .selector-tray .bg-imgs img:hover {
+  border: 2px solid var(--prompt-highlight-color);
 }
 
 .interactive-enabled .step-selector-tray-edits .layer-0 {
@@ -25,18 +60,30 @@
 } 
 
 .interactive-enabled.light .step-selector-tray-edits .selector-tray {
-  background: var(--prompt-btn-fill-light);
+  /* background: var(--prompt-btn-fill-light); */
   color: var(--prompt-text-color-light);
+}
+
+.interactive-enabled.light .step-selector-tray-edits .selector-tray .tray-items {
+  background: var(--prompt-btn-fill-light);
 }
 
 .interactive-enabled .interactive-holder.dark.step-selector-tray-edits .selector-tray {
-  background: var(--prompt-input-fill);
+  /* background: var(--prompt-input-fill); */
   color: var(--color-white);
 }
 
+.interactive-enabled .interactive-holder.dark.step-selector-tray-edits .selector-tray .tray-items {
+  background: var(--prompt-input-fill);
+}
+
 .interactive-enabled .interactive-holder.light.step-selector-tray-edits .selector-tray {
-  background: var(--prompt-btn-fill-light);
+  /* background: var(--prompt-btn-fill-light); */
   color: var(--prompt-text-color-light);
+}
+
+.interactive-enabled .interactive-holder.light.step-selector-tray-edits .selector-tray .tray-items {
+  background: var(--prompt-btn-fill-light);
 }
 
 .interactive-enabled .step-selector-tray-edits .selector-tray .tray-title {
@@ -49,6 +96,9 @@
   flex-direction: row;
   gap: 14px;
   justify-content: space-between;
+  background: var(--prompt-input-fill);
+  padding: 0 16px 12px;
+  border-radius: 0 0 8px 8px;
 }
 
 .interactive-enabled .step-selector-tray-edits
@@ -129,10 +179,8 @@
     transform: translateX(-50%);
     right: auto;
     bottom: 40px;
-    padding: 8px 8px 8px 12px;
     gap: 16px;
-    border-radius: 9px;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.32);
+    /* box-shadow: 0 10px 10px rgba(0, 0, 0, 0.32); */
     box-sizing: content-box;
     width: auto;
   }
@@ -143,6 +191,8 @@
   }
 
   .interactive-enabled .step-selector-tray-edits .selector-tray .tray-items {
+    padding: 8px 8px 8px 12px;
+    border-radius: 9px;
     gap: 12px;
   }
 
@@ -415,7 +465,7 @@
   .interactive-enabled .step-selector-tray-edits .selector-tray {
     padding-top: 8px;
     border-radius: 8px;
-    width: 99.5%;
+    /* width: 99.5%; */
   }
 
   .interactive-enabled .step-selector-tray-edits .tray-items .gray-button {
@@ -466,4 +516,29 @@
     width: 100%;
     min-width: 100%;
   }
+}
+
+.interactive-enabled .interactive-holder .gray-button.start-over-button.changebg-button {
+  display: none;
+}
+
+
+.interactive-enabled .interactive-holder .gray-button:not(.continue) svg * {
+  fill: white
+}
+
+.interactive-enabled .interactive-holder.light .gray-button:not(.continue) svg * {
+  fill: black
+}
+
+.interactive-enabled .interactive-holder .product-icon svg * {
+  fill: white;
+}
+
+.interactive-enabled .interactive-holder.light .product-icon svg * {
+  fill: black;
+}
+
+.interactive-enabled .interactive-holder .gray-button.start-over-button.continue {
+  display: none;
 }
