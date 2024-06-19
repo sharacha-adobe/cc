@@ -1,6 +1,7 @@
 import { createTag } from '../../../scripts/utils.js';
 import createprogressCircle from '../../progress-circle/progress-circle.js';
 import { getBearerToken } from '../../../blocks/unity/unity.js';
+import { showErrorToast } from '../../alert-toast/alert-toast.js';
 
 function toDataURL(url) {
   let pass = null;
@@ -24,6 +25,20 @@ function toDataURL(url) {
     pass = res;
     fail = rej;
   })
+}
+
+function addProgressCircle(data) {
+  const circle = createprogressCircle();
+  data.target.appendChild(circle);
+  data.target.querySelector('.tray-items').classList.add('disable-click');
+  data.target.classList.add('loading');
+}
+
+function removeProgressCircle(data) {
+  const circle = data.target.querySelector('.layer-progress');
+  data.target.classList.remove('loading');
+  if (circle) circle.remove();
+  data.target.querySelector('.tray-items').classList.remove('disable-click');
 }
 
 async function getImageBlobData(e, elem = null) {
@@ -254,14 +269,35 @@ function uploadButton(data) {
       console.log('click disabled');
       return;
     }
+    let mockUploadDelay = false;
     const layer = e.target.closest('.layer');
     const file = e.target.files[0];
     if (!file) return;
+    if (e.target.files[0].type !== 'image/jpeg') {
+      showErrorToast('File type not supported! File must be jpeg only.');
+      return;
+    }
+    if (e.target.files[0].size > 10000000) {
+      showErrorToast('File size too large. File must be less than 10MB');
+      return;
+    };
+    if (navigator.connection && navigator.connection.downlink < 1 || e.target.files[0].size > 1000000) {
+      console.log(navigator.connection.downlink);
+      mockUploadDelay = true;
+      addProgressCircle(data);
+    }
     const reader = new FileReader();
     reader.onload = async function(e) {
       if (!e.target.result.includes('data:image/jpeg')) return alert('Wrong file type - JPEG only.');
       const img = layer.closest('.asset.image.bleed').querySelector('.interactive-holder > picture > img');
-      img.src = e.target.result;
+      if (mockUploadDelay) {
+        setTimeout(() => {
+          img.src = e.target.result;
+          removeProgressCircle(data);
+        }, 2000);
+      } else {
+        img.src = e.target.result;
+      }
     };
     reader.readAsDataURL(file);
     data.target.querySelector('.continue').style.display = 'flex';
