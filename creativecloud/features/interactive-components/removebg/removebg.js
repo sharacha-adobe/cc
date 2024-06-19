@@ -205,7 +205,7 @@ function uploadButton(data) {
     const file = e.target.files[0];
     if (!file) return;
     if (e.target.files[0].type !== 'image/jpeg') {
-      showErrorToast('File type not supported! File must be jpeg, jpg or png.');
+      showErrorToast('File type not supported! File must be jpeg only.');
       return;
     }
     if (e.target.files[0].size > 10000000) {
