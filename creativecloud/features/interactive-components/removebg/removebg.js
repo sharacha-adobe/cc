@@ -1,6 +1,7 @@
 import { createTag } from '../../../scripts/utils.js';
 import createprogressCircle from '../../progress-circle/progress-circle.js';
 import { getBearerToken } from '../../../blocks/unity/unity.js';
+import { showErrorToast } from '../../alert-toast/alert-toast.js';
 
 function toDataURL(url) {
   let pass = null;
@@ -81,6 +82,20 @@ function loadImg(img) {
   });
 }
 
+function addProgressCircle(data) {
+  const circle = createprogressCircle();
+  data.target.appendChild(circle);
+  data.target.querySelector('.tray-items').classList.add('disable-click');
+  data.target.classList.add('loading');
+}
+
+function removeProgressCircle(data) {
+  const circle = data.target.querySelector('.layer-progress');
+  data.target.classList.remove('loading');
+  if (circle) circle.remove();
+  data.target.querySelector('.tray-items').classList.remove('disable-click');
+}
+
 /*-------------- Remove Background --------------*/
 
 function removeBgButton(data) {
@@ -112,42 +127,40 @@ function removeBgButton(data) {
       console.log('click disabled');
       return;
     }
-    const circle = await createprogressCircle();
-    data.target.appendChild(circle);
-    data.target.querySelector('.tray-items').classList.add('disable-click');
-
-    data.target.classList.add('loading');
-    const options1 = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': getBearerToken(),
-        'x-api-key': 'leo',
-      }
-    };
-    const res1 = await fetch('https://assistant-int.adobe.io/api/v1/asset', options1);
-    const { id, href} = await res1.json();
-    const array = await getImageBlobData(null, data.target);
-    let blobData = new Blob([new Uint8Array(array)], { type: 'image/jpeg', });
-    await uploadToS3(href, blobData);
-    const options2 = {
-      method: 'POST',
-      headers: {
-        Authorization: getBearerToken(),
-        'Content-Type': 'application/json',
-        'x-api-key': 'leo'
-      },
-      body: `{"surfaceId":"Unity","assets":[{"id": "${id}"}]}`
-    };
-    
-    const res2 = await fetch('https://assistant-int.adobe.io/api/v1/providers/PhotoshopRemoveBackground', options2);
-    const { outputUrl } = await res2.json();
-    const img = document.querySelector('.interactive-holder > picture > img');
-    img.src = outputUrl;
-    await loadImg(img);
-    data.target.classList.remove('loading');
-    circle.remove();
-    data.target.querySelector('.tray-items').classList.remove('disable-click');
+    addProgressCircle(data);
+    try {
+      const options1 = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': getBearerToken(),
+          'x-api-key': 'leo',
+        }
+      };
+      const res1 = await fetch('https://assistant-int.adobe.io/api/v1/asset', options1);
+      const { id, href} = await res1.json();
+      const array = await getImageBlobData(null, data.target);
+      let blobData = new Blob([new Uint8Array(array)], { type: 'image/jpeg', });
+      await uploadToS3(href, blobData);
+      const options2 = {
+        method: 'POST',
+        headers: {
+          Authorization: getBearerToken(),
+          'Content-Type': 'application/json',
+          'x-api-key': 'leo'
+        },
+        body: `{"surfaceId":"Unity","assets":[{"id": "${id}"}]}`
+      };
+      
+      const res2 = await fetch('https://assistant-int.adobe.io/api/v1/providers/PhotoshopRemoveBackground', options2);
+      const { outputUrl } = await res2.json();
+      const img = document.querySelector('.interactive-holder > picture > img');
+      img.src = outputUrl;
+      await loadImg(img);
+    } catch (err) {
+      console.log('Error occurred');
+    }
+    removeProgressCircle(data);
   });
   return removeBgCTA;
 }
@@ -187,14 +200,34 @@ function uploadButton(data) {
       console.log('click disabled');
       return;
     }
+    let mockUploadDelay = false;
     const layer = e.target.closest('.layer');
     const file = e.target.files[0];
     if (!file) return;
+    if (e.target.files[0].type !== 'image/jpeg') {
+      showErrorToast('File type not supported! File must be jpeg, jpg or png.');
+      return;
+    }
+    if (e.target.files[0].size > 10000000) {
+      showErrorToast('File size too large. File must be less than 10MB');
+      return;
+    };
+    if (navigator.connection && navigator.connection.downlink < 1 || e.target.files[0].size > 1000000) {
+      console.log(navigator.connection.downlink);
+      mockUploadDelay = true;
+      addProgressCircle(data);
+    }
     const reader = new FileReader();
     reader.onload = async function(e) {
-      if (!e.target.result.includes('data:image/jpeg')) return alert('Wrong file type - JPEG only.');
       const img = layer.closest('.asset.image.bleed').querySelector('.interactive-holder > picture > img');
-      img.src = e.target.result;
+      if (mockUploadDelay) {
+        setTimeout(() => {
+          img.src = e.target.result;
+          removeProgressCircle(data);
+        }, 2000);
+      } else {
+        img.src = e.target.result;
+      }
     };
     reader.readAsDataURL(file);
   });
@@ -210,6 +243,5 @@ export default async function stepInit(data) {
   trayTitle.src = data.stepConfigs[data.stepIndex].querySelector('ul li').innerText;
   const selectorTray = selectorTrayWithImgs(layer, data);
   layer.append(selectorTray);
-  /*layer.append(selectorTray);*/
   return layer;
 }

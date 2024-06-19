@@ -1,5 +1,6 @@
 import { getLibs, createTag, loadStyle } from '../../scripts/utils.js';
 import defineDeviceByScreenSize from '../../scripts/decorate.js';
+import createErrorToast from '../../features/alert-toast/alert-toast.js';
 
 export function getImgSrc(pic) {
   const viewport = defineDeviceByScreenSize() === 'MOBILE' ? 'mobile' : 'desktop';
@@ -153,6 +154,8 @@ async function handleLayerDisplay(stepInfo) {
   if (clsLayer) clsLayer.remove();
   stepInfo.target.classList.add(`step-${stepInfo.stepName}`);
   currLayer.classList.add('show-layer');
+  const errToast = createErrorToast();
+  currLayer.append(errToast);
   if (currLayer === prevLayer) return;
   prevLayer?.classList.remove('show-layer');
 }

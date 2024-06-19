@@ -72,6 +72,8 @@ function getDecorateAreaFn() {
   }
 
   async function loadLCPImage(area = document, { fragmentLink = null } = {}) {
+    loadStyle('/creativecloud/features/progress-circle/progress-circle.css');
+    loadStyle('/creativecloud/features/alert-toast/alert-toast.css');
     const firstBlock = area.querySelector('body > main > div > div');
     let fgDivs = null;
     switch (true) {

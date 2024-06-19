@@ -31,7 +31,7 @@ export default async function stepInit(data) {
   });
 
   generateBtn.addEventListener('click', async (e) => {
-    const circle = await createprogressCircle();
+    const circle = createprogressCircle();
     data.target.appendChild(circle);
     data.target.classList.add('loading');
     const payload = `{

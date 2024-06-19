@@ -1,14 +1,6 @@
-import { createTag, loadStyle } from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
 
-async function loadProgressCss() {
-  const stylePromise = new Promise((resolve) => {
-    loadStyle('/creativecloud/features/progress-circle/progress-circle.css', resolve);
-  });
-  await stylePromise;
-}
-
-export default async function createprogressCircle() {
-  await loadProgressCss();
+export default function createprogressCircle() {
   const pdom = `<div class="spectrum-ProgressCircle-track"></div>
   <div class="spectrum-ProgressCircle-fills">
     <div class="spectrum-ProgressCircle-fillMask1">

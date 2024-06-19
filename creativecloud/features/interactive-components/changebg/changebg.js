@@ -134,7 +134,7 @@ function removeBgButton(data) {
       console.log('click disabled');
       return;
     }
-    const circle = await createprogressCircle();
+    const circle = createprogressCircle();
     data.target.appendChild(circle);
     data.target.querySelector('.tray-items').classList.add('disable-click');
 

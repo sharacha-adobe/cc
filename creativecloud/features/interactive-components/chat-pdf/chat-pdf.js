@@ -1,5 +1,20 @@
 import { createTag } from '../../../scripts/utils.js';
 import defineDeviceByScreenSize from '../../../scripts/decorate.js';
+import { showErrorToast } from '../../alert-toast/alert-toast.js';
+import createprogressCircle from '../../progress-circle/progress-circle.js';
+
+
+function addProgressCircle(target) {
+  const circle = createprogressCircle();
+  target.appendChild(circle);
+  target.classList.add('loading');
+}
+
+function removeProgressCircle(target) {
+  const circle = target.querySelector('.layer-progress');
+  target.classList.remove('loading');
+  if (circle) circle.remove();
+}
 
 function applyAccessibility(inputEle, target) {
   let tabbing = false;
@@ -167,19 +182,32 @@ async function chatPDF(layer, pdfObj) {
 });
 }
 
-function uploadPdf(media, layer, pdfObj) {
+function uploadPdf(media, layer, pdfObj, data) {
   layer.querySelectorAll('.uploadButton').forEach((btn) => {
     const analyticsBtn = btn.querySelector('.interactive-link-analytics-text');
     btn.addEventListener('cancel', () => {
       cancelAnalytics(btn);
     });
     btn.addEventListener('change', async (e) => {
-      btn.classList.add('loading');
-      //layer.querySelector('.message').classList.remove('hide');
       const image = media.querySelector('picture > img');
       const parent = image.parentElement;
       const file = e.target.files[0];
-      if (!file.type.startsWith('application/pdf')) return;
+      if (!file) return;
+      if (e.target.files[0].type !== 'application/pdf') {
+        showErrorToast('File type not supported! File must be a pdf only.');
+        return;
+      }
+      if (e.target.files[0].size > 2000000) {
+        showErrorToast('File size too large. File must be less than 2MB');
+        return;
+      };
+      // btn.classList.add('loading');
+      let mockUploadDelay = false;
+      if (navigator.connection && navigator.connection.downlink < 1 || e.target.files[0].size > 1000000) {
+        console.log(navigator.connection.downlink);
+        mockUploadDelay = true;
+        addProgressCircle(media);
+      }
       if (file) {
         pdfObj.fileName = file.name;
         pdfObj.pdfFile = file;
@@ -187,9 +215,18 @@ function uploadPdf(media, layer, pdfObj) {
         pdfObj.pdfUrl = pdfUrl;
         analyticsBtn.innerHTML = 'Upload Button';
         const embed = createTag('embed', { src: `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`, width: '100%', height: '100%', type: 'application/pdf' });
-        image.remove();
-        parent.appendChild(embed);
-        pdfObj.pdfUrl = pdfUrl;
+        if (mockUploadDelay) {
+          setTimeout(() => {
+            image.remove();
+            parent.appendChild(embed);
+            pdfObj.pdfUrl = pdfUrl;
+            removeProgressCircle(media);
+          }, 2000);
+        } else {
+          image.remove();
+          parent.appendChild(embed);
+          pdfObj.pdfUrl = pdfUrl;
+        }
         analyticsBtn.innerHTML = 'Upload Button';
         const continueBtn = layer.querySelector('.continueButton');
         if (continueBtn) {
