@@ -99,7 +99,7 @@ const locales = {
   cn: { ietf: 'zh-CN', tk: 'puu3xkp' },
   hk_zh: { ietf: 'zh-HK', tk: 'jay0ecd' },
   tw: { ietf: 'zh-TW', tk: 'jay0ecd' },
-  jp: { ietf: 'ja-JP', tk: 'dvg6awq' },
+  jp: { ietf: 'ja-JP', tk: 'dvg6awq', lang: 'ja' },
   kr: { ietf: 'ko-KR', tk: 'qjs5sfm' },
   // Langstore Support.
   langstore: { ietf: 'en-US', tk: 'hah7vzn.css' },
