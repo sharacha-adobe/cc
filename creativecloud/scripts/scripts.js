@@ -134,7 +134,7 @@ const CONFIG = {
         guest_allowed: true
       }
     }
-  }
+  },
   locales,
   geoRouting: 'on',
   prodDomains: ['www.adobe.com', 'helpx.adobe.com', 'business.adobe.com'],
