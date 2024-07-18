@@ -128,6 +128,13 @@ const CONFIG = {
   contentRoot: '/cc-shared',
   codeRoot: '/creativecloud',
   imsClientId: 'adobedotcom-cc',
+  adobeid: {
+    api_parameters: {
+      check_token: {
+        guest_allowed: true
+      }
+    }
+  }
   locales,
   geoRouting: 'on',
   prodDomains: ['www.adobe.com', 'helpx.adobe.com', 'business.adobe.com'],
