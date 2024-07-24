@@ -2,7 +2,9 @@
   display: none;
 }
 
-.marquee.split.unity-enabled .asset.bleed {
-  position: relative;
-  width: 100%;
+@media screen and (min-width: 1200px) {
+  .marquee.split.unity-enabled .asset.bleed {
+    position: relative;
+    width: 100%;
+  }
 }
