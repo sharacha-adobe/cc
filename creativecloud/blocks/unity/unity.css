@@ -1,3 +1,8 @@
 .unity {
   display: none;
 }
+
+.marquee.split.unity-enabled .asset.bleed {
+  position: relative;
+  width: 100%;
+}
