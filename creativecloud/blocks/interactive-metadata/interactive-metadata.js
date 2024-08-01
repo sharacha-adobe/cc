@@ -214,12 +214,14 @@ function createInteractiveArea(el, pic) {
   if (imgElem) {
     imgElem.src = getImgSrc(pic);
     assetElem = createTag('video');
-    iArea.classList.add('show-image')
+    iArea.classList.add('show-image');
+    iArea.classList.remove('show-video');
   } else {
     assetElem = createTag('picture');
     const img = createTag('img');
     assetElem.append(img);
-    iArea.classList.add('show-video')
+    iArea.classList.add('show-video');
+    iArea.classList.remove('show-image');
   }
   [...pic.querySelectorAll('source')].forEach((s) => s.remove());
   iArea.append(pic, assetElem);
