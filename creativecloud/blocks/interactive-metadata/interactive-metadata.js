@@ -201,7 +201,7 @@ function decorateMobileHeading(intEnb) {
   if (!h) return;
   const htxt = h.textContent;
   const hTxtTop = createTag('div', { class: 'mobile-heading-top' }, htxt);
-  intEnb.querySelector('.image').prepend(hTxtTop);
+  intEnb.querySelector('.image, .asset').prepend(hTxtTop);
 }
 
 function createInteractiveArea(el, pic) {
