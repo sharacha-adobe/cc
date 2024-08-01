@@ -146,9 +146,9 @@ async function handleLayerDisplay(stepInfo) {
   const prevLayer = stepInfo.target.querySelector(`.layer-${prevStepIndex}`);
   const miloLibs = getLibs('/libs');
   const { decorateDefaultLinkAnalytics } = await import(`${miloLibs}/martech/attributes.js`);
-  await handleImageTransition(stepInfo);
   await loadAllImgs(currLayer.querySelectorAll('img[src*="media_"]'));
   await decorateDefaultLinkAnalytics(currLayer);
+  await handleImageTransition(stepInfo);
   if (prevStepIndex !== stepInfo.stepIndex) stepInfo.target.classList.remove(`step-${stepInfo.stepList[prevStepIndex]}`);
   if (clsLayer) clsLayer.remove();
   stepInfo.target.classList.add(`step-${stepInfo.stepName}`);
