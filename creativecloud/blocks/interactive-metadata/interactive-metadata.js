@@ -205,7 +205,7 @@ function decorateMobileHeading(intEnb) {
 }
 
 function createInteractiveArea(el, pic) {
-  const iArea = createTag('div', { class: 'interactive-holder show-image' });
+  const iArea = createTag('div', { class: 'interactive-holder' });
   const newPic = pic.cloneNode(true);
   const p = createTag('p', {}, newPic);
   el.querySelector(':scope > div > div').prepend(p);
@@ -214,10 +214,12 @@ function createInteractiveArea(el, pic) {
   if (imgElem) {
     imgElem.src = getImgSrc(pic);
     assetElem = createTag('video');
+    iArea.classList.add('show-image')
   } else {
     assetElem = createTag('picture');
     const img = createTag('img');
     assetElem.append(img);
+    iArea.classList.add('show-video')
   }
   [...pic.querySelectorAll('source')].forEach((s) => s.remove());
   iArea.append(pic, assetElem);
