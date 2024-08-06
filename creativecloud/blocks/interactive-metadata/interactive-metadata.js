@@ -105,7 +105,7 @@ async function createDisplayVideo(target, video, src) {
   Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr]));
   try {
     video?.load();
-    video.oncanplay = async () => await video?.play();    
+    video.oncanplaythrough = async () => await video?.play();    
   } catch (err) { return; }
   target.classList.add('show-video');
   target.classList.remove('show-image');
