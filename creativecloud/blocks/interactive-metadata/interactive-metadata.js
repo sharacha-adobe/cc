@@ -98,10 +98,10 @@ async function createDisplayVideo(target, video, dispVideo) {
   const posterImg= dispVideo.getAttribute('data-video-poster') ? dispVideo.getAttribute('data-video-poster') : '';
   const { pathname, hash } = new URL(src);
   const attrs = { src: pathname, playsinline: '', autoplay: '', muted: '', type: 'video/mp4' };  
+  if (posterImg !== '') attrs.poster = posterImg;
   if (hash?.includes('autoplay1')) video?.removeAttribute('loop');
   else attrs.loop = '';
-  Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr]));
-  if (posterImg !== '') video.setAttribute('poster', posterImg);
+  Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr])); 
   try {
     video?.load();
     video.oncanplaythrough = async () => await video?.play();    
