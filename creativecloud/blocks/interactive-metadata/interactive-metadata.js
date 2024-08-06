@@ -67,12 +67,8 @@ function preloadAsset(nextStepIndex, stepInfo) {
   const da = das[daIdx];
   if (da.nodeName === 'A') {
     const { pathname } = new URL(da.href);
-    //return new Promise((resolve, reject) => {
     const video = createTag('video', { src: pathname });
-    /*video.onloadeddata = () => resolve(preloadAsset);
-    video.onerror = reject;*/
     video.load();
-  //});
   } else if (da.nodeName === 'IMG') {
     const src = getImgSrc(da.closest('picture'));
     fetch(src);
@@ -97,12 +93,15 @@ async function createDisplayImg(target, replaceEl, src, alt) {
   target.classList.remove('show-video');
 }
 
-async function createDisplayVideo(target, video, src) {
+async function createDisplayVideo(target, video, dispVideo) {
+  const src = dispVideo.href;
+  const posterImg= dispVideo.getAttribute('data-video-poster') ? dispVideo.getAttribute('data-video-poster') : '';
   const { pathname, hash } = new URL(src);
-  const attrs = { src: pathname, playsinline: '', autoplay: '', muted: '', type: 'video/mp4' };
+  const attrs = { src: pathname, playsinline: '', autoplay: '', muted: '', type: 'video/mp4' };  
   if (hash?.includes('autoplay1')) video?.removeAttribute('loop');
   else attrs.loop = '';
   Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr]));
+  if (posterImg !== '') video.setAttribute('poster', posterImg);
   try {
     video?.load();
     video.oncanplaythrough = async () => await video?.play();    
@@ -119,7 +118,7 @@ export async function handleImageTransition(stepInfo, transitionCfg = {}) {
     if (transitionCfg.src) {
       await createDisplayImg(stepInfo.target, trgtPic, transitionCfg.src, transitionCfg.alt);
     } else {
-      await createDisplayVideo(stepInfo.target, trgtVideo, transitionCfg.vsrc);
+      await createDisplayVideo(stepInfo.target, trgtVideo, transitionCfg);
     }
     return;
   }
@@ -132,7 +131,7 @@ export async function handleImageTransition(stepInfo, transitionCfg = {}) {
     await createDisplayImg(stepInfo.target, trgtPic, picSrc, displayPics[imgIdx].alt);
   } else if (displayVideos.length) {
     const vidIdx = (displayPath < displayVideos.length) ? displayPath : 0;
-    await createDisplayVideo(stepInfo.target, trgtVideo, displayVideos[vidIdx].href);
+    await createDisplayVideo(stepInfo.target, trgtVideo, displayVideos[vidIdx]);
   }
 }
 
