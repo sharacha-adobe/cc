@@ -67,8 +67,12 @@ function preloadAsset(nextStepIndex, stepInfo) {
   const da = das[daIdx];
   if (da.nodeName === 'A') {
     const { pathname } = new URL(da.href);
+    //return new Promise((resolve, reject) => {
     const video = createTag('video', { src: pathname });
+    /*video.onloadeddata = () => resolve(preloadAsset);
+    video.onerror = reject;*/
     video.load();
+  //});
   } else if (da.nodeName === 'IMG') {
     const src = getImgSrc(da.closest('picture'));
     fetch(src);
@@ -101,7 +105,7 @@ async function createDisplayVideo(target, video, src) {
   Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr]));
   try {
     video?.load();
-    await video?.play();
+    video.oncanplay = async () => await video?.play();    
   } catch (err) { return; }
   target.classList.add('show-video');
   target.classList.remove('show-image');
@@ -136,7 +140,7 @@ async function handleNextStep(stepInfo) {
   const nextStepIndex = getNextStepIndex(stepInfo);
   stepInfo.stepInit = await loadJSandCSS(stepInfo.stepList[nextStepIndex]);
   await loadAllImgs(stepInfo.stepConfigs[nextStepIndex].querySelectorAll('img[src*="svg"]'));
-  preloadAsset(nextStepIndex, stepInfo);
+  await preloadAsset(nextStepIndex, stepInfo);
 }
 
 async function handleLayerDisplay(stepInfo) {
@@ -146,9 +150,9 @@ async function handleLayerDisplay(stepInfo) {
   const prevLayer = stepInfo.target.querySelector(`.layer-${prevStepIndex}`);
   const miloLibs = getLibs('/libs');
   const { decorateDefaultLinkAnalytics } = await import(`${miloLibs}/martech/attributes.js`);
+  await handleImageTransition(stepInfo);
   await loadAllImgs(currLayer.querySelectorAll('img[src*="media_"]'));
   await decorateDefaultLinkAnalytics(currLayer);
-  await handleImageTransition(stepInfo);
   if (prevStepIndex !== stepInfo.stepIndex) stepInfo.target.classList.remove(`step-${stepInfo.stepList[prevStepIndex]}`);
   if (clsLayer) clsLayer.remove();
   stepInfo.target.classList.add(`step-${stepInfo.stepName}`);
@@ -215,13 +219,11 @@ function createInteractiveArea(el, pic) {
     imgElem.src = getImgSrc(pic);
     assetElem = createTag('video');
     iArea.classList.add('show-image');
-    iArea.classList.remove('show-video');
   } else {
     assetElem = createTag('picture');
     const img = createTag('img');
     assetElem.append(img);
     iArea.classList.add('show-video');
-    iArea.classList.remove('show-image');
   }
   [...pic.querySelectorAll('source')].forEach((s) => s.remove());
   iArea.append(pic, assetElem);
