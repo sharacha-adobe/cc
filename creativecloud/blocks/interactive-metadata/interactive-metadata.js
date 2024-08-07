@@ -93,18 +93,18 @@ async function createDisplayImg(target, replaceEl, src, alt) {
   target.classList.remove('show-video');
 }
 
-async function createDisplayVideo(target, video, dispVideo) {
-  const src = dispVideo.href;
-  const posterImg= dispVideo.getAttribute('data-video-poster') ? dispVideo.getAttribute('data-video-poster') : '';
+async function createDisplayVideo(target, video, src, poster = '') {
   const { pathname, hash } = new URL(src);
-  const attrs = { src: pathname, playsinline: '', autoplay: '', muted: '', type: 'video/mp4' };  
-  if (posterImg !== '') attrs.poster = posterImg;
+  const attrs = { src: pathname, playsinline: '', autoplay: '', muted: '', type: 'video/mp4' };
+  if (poster !== '') attrs.poster = poster;
   if (hash?.includes('autoplay1')) video?.removeAttribute('loop');
   else attrs.loop = '';
-  Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr])); 
+  Object.keys(attrs).forEach((attr) => video?.setAttribute(attr, attrs[attr]));
   try {
     video?.load();
-    video.oncanplaythrough = async () => await video?.play();    
+    video.oncanplaythrough = async () => {
+      await video.play();
+    };
   } catch (err) { return; }
   target.classList.add('show-video');
   target.classList.remove('show-image');
@@ -118,7 +118,7 @@ export async function handleImageTransition(stepInfo, transitionCfg = {}) {
     if (transitionCfg.src) {
       await createDisplayImg(stepInfo.target, trgtPic, transitionCfg.src, transitionCfg.alt);
     } else {
-      await createDisplayVideo(stepInfo.target, trgtVideo, transitionCfg);
+      await createDisplayVideo(stepInfo.target, trgtVideo, transitionCfg.vsrc);
     }
     return;
   }
@@ -131,7 +131,8 @@ export async function handleImageTransition(stepInfo, transitionCfg = {}) {
     await createDisplayImg(stepInfo.target, trgtPic, picSrc, displayPics[imgIdx].alt);
   } else if (displayVideos.length) {
     const vidIdx = (displayPath < displayVideos.length) ? displayPath : 0;
-    await createDisplayVideo(stepInfo.target, trgtVideo, displayVideos[vidIdx]);
+    const posterImg = displayVideos[vidIdx].getAttribute('data-video-poster') ? displayVideos[vidIdx].getAttribute('data-video-poster') : '';
+    await createDisplayVideo(stepInfo.target, trgtVideo, displayVideos[vidIdx].href, posterImg);
   }
 }
 
