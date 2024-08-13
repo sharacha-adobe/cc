@@ -66,8 +66,8 @@ function getDecorateAreaFn() {
   let lcpImgSet = false;
   // Load LCP image immediately
   const eagerLoad = (lcpImg) => {
-    /*lcpImg?.setAttribute('loading', 'eager');
-    lcpImg?.setAttribute('fetchpriority', 'high');*/
+    lcpImg?.setAttribute('loading', 'eager');
+    lcpImg?.setAttribute('fetchpriority', 'high');
     if (lcpImg) {
       const preloadLink = createTag('link', {rel: 'preload', as: 'image', href: lcpImg?.getAttribute('src')})
       document.head.append(preloadLink);
