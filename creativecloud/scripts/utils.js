@@ -68,9 +68,11 @@ function getDecorateAreaFn() {
   const eagerLoad = (lcpImg) => {
     /*lcpImg?.setAttribute('loading', 'eager');
     lcpImg?.setAttribute('fetchpriority', 'high');*/
-    const preloadLink = createTag('link', {rel: 'preload', as: 'image', href: lcpImg.getAttribute('src')})
-    document.head.append(preloadLink);
-    if (lcpImg) lcpImgSet = true;
+    if (lcpImg) {
+      const preloadLink = createTag('link', {rel: 'preload', as: 'image', href: lcpImg?.getAttribute('src')})
+      document.head.append(preloadLink);
+      lcpImgSet = true;
+    }
   };
 
   function isRootPage() {
