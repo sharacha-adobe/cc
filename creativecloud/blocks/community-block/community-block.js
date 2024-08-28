@@ -5,4 +5,5 @@ export default async function init(el) {
     data.forEach(element => {
         console.log(element);
     });
+  
 }
