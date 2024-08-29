@@ -14,3 +14,21 @@
   max-width: var(--grid-container-width);
   margin: 0 auto;
 }
+
+.section.milo-card-section{
+  background-color: #f8f8f8;
+  display: grid;
+  justify-content: center;
+  width: 100%;
+  .content, .milo-card-wrapper{
+    width: 940px;
+  }
+  .consonant-CardsGrid{
+    gap: 26px;
+    display: flex;
+    .card.half-card{
+      width: 288px;
+      height: 155px;
+    }
+  }
+}

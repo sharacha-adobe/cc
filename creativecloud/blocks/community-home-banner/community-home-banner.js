@@ -32,16 +32,14 @@ export default async function init(el) {
         statsDiv.id = 'banner-stats-strip';
         
         try{
-            const res = await fetch('https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/homepagestats.json');
-            const jsonResp = await res.json();
-            console.log(jsonResp);
-            let data = jsonResp.data;
+            const res = await fetch('https://community-dev.adobe.com/wsyco67866/plugins/custom/adobe/adobedxdev/landing-page-data-fetch');
+            const data = await res.json();
 
-            if(data.length > 0){
+            if(Object.keys(data).length > 0){
                 
-                const memberCount = abbreviate(data[0]['Members']) ?? 0;
-                const postCount = abbreviate(data[0]['conversations']) ?? 0;
-                const onlineCount = abbreviate(data[0]['onlineUsers']) ?? 0;
+                const memberCount = abbreviate(data['members']) ?? 0;
+                const postCount = abbreviate(data['conversations']) ?? 0;
+                const onlineCount = abbreviate(data['online_users']) ?? 0;
 
                 const membersDiv = document.createElement('div');
                 membersDiv.id = 'members-count';
