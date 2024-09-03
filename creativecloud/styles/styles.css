@@ -32,3 +32,20 @@
     }
   }
 } */
+
+.section .text.category-banner-left .foreground{
+  div[data-valign]{
+    flex-direction: row-reverse !important;
+    justify-content: flex-end;
+  }
+  .body-m{
+    margin-top: 0px;
+    margin-right: 10px;
+  }
+}
+.section .text.category-banner-right .foreground{
+  div[data-valign]{
+    flex-direction: row !important;
+    justify-content: space-around;
+  }
+}
