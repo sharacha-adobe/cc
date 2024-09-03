@@ -3,7 +3,8 @@
     justify-content: center;
 }
 .community-bricks{
-    margin-bottom: 20px;
+    padding-bottom: 20px;
+    padding-top: 12px;
 }
 .community-brick{
     width: 288px;
@@ -20,14 +21,14 @@
     background-position: center;
 }
 .brick-title{
-    margin-left: 120px;
+    /* margin-left: 120px; */
     margin-bottom: 16px;
     text-align: left;
     font: normal normal 800 22px / 20px adobe-clean;
     letter-spacing: 0px;
     color: #222222;
     opacity: 1;
-    margin-top: 32px;
+    /* margin-top: 32px; */
     height: 27px;
     -webkit-font-smoothing: antialiased;
 }

@@ -6,6 +6,7 @@ export default async function init(el) {
     if(data.length > 0){
         const title = document.createElement('div');
         title.classList.add('brick-title');
+        title.classList.add('container');
         title.innerHTML = data[0]['Title'];
         bricks.appendChild(title);
 
