@@ -1,6 +1,5 @@
 function loadMoreCommunities() {
     try{
-        console.log("load more called");
         var x = document.getElementsByClassName("hide-cards");
         if (x.length > 0) {  
             const loadText = document.querySelector('#load-more-coms');
@@ -48,9 +47,8 @@ function showFilters(){
     }
 }
 
-function sortDDClick(sortType) {
+async function sortDDClick(sortType, currFilters) {
     try {
-        console.log("sort clicked", sortType);
         let selectedSortId = 'sort-'+sortType;
         var sortSelected = document.getElementById(selectedSortId);
         document.querySelector('.home-filter-dropdown.selected')?.classList.remove('selected');
@@ -60,23 +58,90 @@ function sortDDClick(sortType) {
         } else {
             sortSelected.classList.add('selected');
         }
-
-        // const filters = document.querySelector('.filter-button.selected')?.getAttribute('filter-id');
+        const html = await fetchHomePageFeedContent(sortType, currFilters);
+        renderFeed(html);
     } catch (err) {
         console.error(err);
     }
 }
 
+function renderFeed(html){
+    const el = document.querySelector('#channel-view-list');
+    if(el){
+        el.innerHTML = html;
+    }
+
+    const loadMoreDiv = el.querySelector('#load-more-coms');
+    loadMoreDiv.onclick = function() {
+        loadMoreCommunities();
+    };
+}
+
+async function filterClick(event, currSort, currFilters){
+    let catList = [];
+    let currEl = event.currentTarget;
+    if (document.querySelector('.filter-button.selected')?.getAttribute('filter-id') === currEl.getAttribute('filter-id')) {
+        showFilters();
+        return;
+    }
+    
+    const selectedFilterButton = document.querySelector('.filter-button.selected');
+    if (selectedFilterButton) {
+        selectedFilterButton.classList.remove('selected');
+    }
+    
+    const currFilterId = currEl.getAttribute('filter-id');
+    
+    if (currEl.classList.contains('selected')) {
+        currEl.classList.remove('selected');
+    } else {
+        currEl.classList.add('selected');
+        catList.push(currFilterId);
+    }
+    let filterParam = 'all';
+    if (catList.length == 0) {
+        catList = 'all';
+    }else{
+        catList = catList.join(',');
+        filterParam = catList;
+    }
+  
+    const filterLabelText = currEl.querySelector('.filter-label').textContent;
+    document.querySelector('#all-cat #filter-dropdown-label').textContent = filterLabelText;
+    showFilters();
+    currFilters = catList;
+    const html = await fetchHomePageFeedContent(currSort, currFilters);
+    renderFeed(html);
+}
+
+function getPageQueryParams(sort, filters){
+    const params = new URLSearchParams({
+        sort: sort,
+        filters: filters,
+        locale: "en"
+    });
+    return params.toString();
+}
+
+async function fetchHomePageFeedContent(sort, filters){
+    const queryParams = getPageQueryParams(sort, filters);
+    const res = await fetch(`https://community-dev.adobe.com/wsyco67866/plugins/custom/adobe/adobedxdev/new-home-feed-data-fetch?${queryParams}`, );
+    return await res.text();
+}
+
 export default async function init(el) {
-    const res = await fetch('https://community-dev.adobe.com/wsyco67866/plugins/custom/adobe/adobedxdev/new-home-feed-data-fetch');
-    const html = await res.text();
+
+    let currSort = 'featured';
+    let currFilters = 'all';
+
+    const html = await fetchHomePageFeedContent(currSort, currFilters);
 
     const header = document.createElement('div');
     header.classList.add('channel-view-header');
     const list = document.createElement('div');
     list.id = 'channel-view-list';
     list.innerHTML = html;
-
+    
     el.appendChild(header);
     el.appendChild(list);
   
@@ -139,7 +204,6 @@ export default async function init(el) {
         listItem.id = `sort-${sort_type}`;
         listItem.setAttribute('item-id', `item-${index}`);
         listItem.setAttribute('item-value', sort_type);
-        // listItem.setAttribute('onclick', `sortDDClick('${sort_type}')`);
         
         const textKey = sort_type === 'latest' ? '_activity' : '';
         listItem.textContent = `${sort_type}${textKey}`;
@@ -151,7 +215,8 @@ export default async function init(el) {
     sortDiv.forEach((element) => {
         element.addEventListener('click', function(event) {
             const sortType = event.target.getAttribute('item-value');
-            sortDDClick(sortType);
+            currSort = sortType;
+            sortDDClick(sortType, currFilters);
         });
     });
 
@@ -174,7 +239,6 @@ export default async function init(el) {
             filterButton.className = `filter-button ${element['filterId']} ${element['filterId'] === 'filter-10' ? 'selected' : ''}`;
             filterButton.setAttribute('data-id', element['filterId']);
             filterButton.setAttribute('filter-id', element['id']);
-            filterButton.setAttribute('onclick', 'checkFunction(3,event)');
             
             const filterIcon = document.createElement('span');
             filterIcon.className = 'filter-icon';
@@ -191,6 +255,15 @@ export default async function init(el) {
             filterDirectLink.appendChild(filterButton);
             filterListContainer.appendChild(filterDirectLink);
         });
+
+        const filterDiv = el.querySelectorAll('.filter-button');
+        filterDiv.forEach((element) => {
+            element.addEventListener('click', function(event) {
+                filterClick(event, currSort, currFilters);
+            });
+        });
     }
+    console.log("curr sort", currSort);
+    console.log("curr filter", currFilters);
 }
 

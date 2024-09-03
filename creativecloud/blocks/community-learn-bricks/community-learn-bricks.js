@@ -1,7 +1,7 @@
 export default async function init(el) {
     const res = await fetch('https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/Authorings/learnwithadobe.json');
     const {data} = await res.json();
-    console.log(data);
+
     const bricks = document.querySelector('.community-learn-bricks');
     if(data.length > 0){
         const title = document.createElement('div');

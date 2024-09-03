@@ -91,7 +91,7 @@ function abbreviate(val=0){
 }
 
 export default async function init(el) {
-  console.log(el);
+
   el.classList.add('text-block', 'con-block');
   let rows = el.querySelectorAll(':scope > div');
   if (rows.length > 1) {
@@ -147,7 +147,6 @@ export default async function init(el) {
   inputElement.setAttribute('placeholder', 'Search Adobe Community...');
   inputElement.id = 'banner-search-bar';
 
-  // Insert the input element before the icon-area
   iconArea.parentNode.insertBefore(inputElement, iconArea);
   const searchIcon = document.createElement('img');
   searchIcon.id = 'banner-search-icon';
